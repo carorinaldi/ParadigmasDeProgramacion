@@ -7,7 +7,7 @@ type Propiedad = (Nombre,Precio)
 
 data Participante = UnParticipante {
     nombre               :: String,
-    cantidadDeDinero     :: Int,
+    dinero               :: Int,
     tactica              :: String,
     propiedadesCompradas :: [Propiedad],
     acciones             :: [Accion]
@@ -27,17 +27,17 @@ jugadorParaPrueba = UnParticipante "Merli" 500 "Oferente singular" [("Casa",1000
 --ACCIONES----------------------------------------------------------------------------------------------------------------
 
 pasarPorElBanco :: Accion
-pasarPorElBanco unJugador = unJugador {cantidadDeDinero = cantidadDeDinero unJugador + 40, tactica = "Comprador Compulsivo"}
+pasarPorElBanco unJugador = unJugador {dinero = dinero unJugador + 40, tactica = "Comprador Compulsivo"}
 
 enojarse :: Accion
-enojarse unJugador = unJugador {cantidadDeDinero = cantidadDeDinero unJugador + 50 , acciones = gritar : acciones unJugador}
+enojarse unJugador = unJugador {dinero = dinero unJugador + 50 , acciones = gritar : acciones unJugador}
 
 gritar :: Accion
 gritar unJugador = unJugador {nombre = "AHHHH" ++ nombre unJugador}
 
 subastar :: Propiedad -> Accion
 subastar unaPropiedad unJugador
-    | (tactica unJugador == "Oferente singular") || (tactica unJugador == "Accionista") = unJugador {cantidadDeDinero = cantidadDeDinero unJugador - (snd unaPropiedad), propiedadesCompradas = unaPropiedad : (propiedadesCompradas unJugador)}
+    | (tactica unJugador == "Oferente singular") || (tactica unJugador == "Accionista") = unJugador {dinero = dinero unJugador - (snd unaPropiedad), propiedadesCompradas = unaPropiedad : (propiedadesCompradas unJugador)}
 
 --Funciones Auxiliares para Accion cobrarAlquileres-----------------------------------------------------------------------------
 
@@ -49,17 +49,17 @@ esPropiedadCara  = not.esPropiedadBarata  --(>=150).snd.unaPropiedad
 ---------------------------------------------------------------------------------------------------------------------------------
 
 cobrarAlquileres :: Accion
-cobrarAlquileres unJugador = unJugador {cantidadDeDinero = cantidadDeDinero unJugador + ((*10).length.filter esPropiedadBarata.propiedadesCompradas $ unJugador) + ((*20).length.filter esPropiedadCara.propiedadesCompradas $ unJugador)}
+cobrarAlquileres unJugador = unJugador {dinero = dinero unJugador + ((*10).length.filter esPropiedadBarata.propiedadesCompradas $ unJugador) + ((*20).length.filter esPropiedadCara.propiedadesCompradas $ unJugador)}
 
 pagarAAccionistas :: Accion
 pagarAAccionistas unJugador
-    | tactica unJugador == "Accionista" = unJugador {cantidadDeDinero = cantidadDeDinero unJugador + 200}
-    | otherwise = unJugador {cantidadDeDinero = cantidadDeDinero unJugador - 100}
+    | tactica unJugador == "Accionista" = unJugador {dinero = dinero unJugador + 200}
+    | otherwise = unJugador {dinero = dinero unJugador - 100}
 
 hacerBerrinchePor :: Propiedad -> Accion
 hacerBerrinchePor unaPropiedad unJugador
-    | cantidadDeDinero unJugador >= snd unaPropiedad = unJugador {cantidadDeDinero = cantidadDeDinero unJugador - (snd unaPropiedad), propiedadesCompradas = unaPropiedad : (propiedadesCompradas unJugador)}
-    | otherwise = hacerBerrinchePor unaPropiedad (gritar (unJugador {cantidadDeDinero = cantidadDeDinero unJugador + 10})) 
+    | dinero unJugador >= snd unaPropiedad = unJugador {dinero = dinero unJugador - (snd unaPropiedad), propiedadesCompradas = unaPropiedad : (propiedadesCompradas unJugador)}
+    | otherwise = hacerBerrinchePor unaPropiedad (gritar (unJugador {dinero = dinero unJugador + 10})) 
 
 ultimaRonda :: Participante -> Accion
 ultimaRonda unJugador = foldr1 (.) (acciones unJugador)
@@ -69,5 +69,5 @@ realizarTodasLasAcciones unJugador = ultimaRonda unJugador $ unJugador
 
 juegoFinal :: Participante -> Participante -> String
 juegoFinal unJugador otroJugador 
-    | (cantidadDeDinero.realizarTodasLasAcciones $ unJugador) > (cantidadDeDinero.realizarTodasLasAcciones $ otroJugador) = "El/La ganador/a es " ++ nombre unJugador
+    | (dinero.realizarTodasLasAcciones $ unJugador) > (dinero.realizarTodasLasAcciones $ otroJugador) = "El/La ganador/a es " ++ nombre unJugador
     | otherwise = "El/La ganador/a es " ++ nombre otroJugador
