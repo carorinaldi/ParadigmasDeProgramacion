@@ -96,7 +96,10 @@ hacerBerrinchePor unaPropiedad unJugador
 ultimaRonda :: Participante -> Accion
 ultimaRonda unJugador = foldr1 (.) (acciones unJugador)
 
-juegoFinal :: Participante -> Participante -> String
+dineroUltimaRonda :: Participante -> Int
+dineroUltimaRonda unJugador = dinero.ultimaRonda unJugador $ unJugador
+
+juegoFinal :: Participante -> Participante -> Participante
 juegoFinal unJugador otroJugador 
-    | (dinero.ultimaRonda unJugador $ unJugador) > (dinero.ultimaRonda otroJugador $ otroJugador) = "El/La ganador/a es " ++ nombre unJugador
-    | otherwise = "El/La ganador/a es " ++ nombre otroJugador
+    | (dineroUltimaRonda unJugador) > (dineroUltimaRonda otroJugador) = ultimaRonda unJugador $ unJugador
+    | otherwise = ultimaRonda otroJugador $ otroJugador
