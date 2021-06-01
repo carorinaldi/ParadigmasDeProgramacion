@@ -66,14 +66,13 @@ subastar unaPropiedad unJugador
 esPropiedadBarata :: Propiedad -> Bool
 esPropiedadBarata unaPropiedad = (<150).snd $ unaPropiedad
 
-esPropiedadCara :: Propiedad -> Bool
-esPropiedadCara  = not.esPropiedadBarata  --(>=150).snd.unaPropiedad 
-
-cantidadPropiedadesSegun :: (Propiedad->Bool) -> Int -> Participante-> Int
-cantidadPropiedadesSegun condicion valorAMultiplicar = (*valorAMultiplicar).length.filter condicion.propiedadesCompradas 
+valorAlquiler :: Propiedad -> Int 
+valorAlquiler propiedad 
+    | esPropiedadBarata propiedad = 10
+    | otherwise = 20
 
 calcularAlquileres :: Participante -> Int
-calcularAlquileres unJugador =  (cantidadPropiedadesSegun esPropiedadBarata 10 unJugador) + (cantidadPropiedadesSegun esPropiedadCara 20 unJugador)
+calcularAlquileres unJugador = sum.map valorAlquiler.propiedadesCompradas $ unJugador
 ---------------------------------------------------------------------------------------------------------------------------------
 
 cobrarAlquileres :: Accion
