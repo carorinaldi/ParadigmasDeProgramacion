@@ -50,11 +50,8 @@ gritar :: Accion
 gritar unJugador = mapNombre ("AHHHH" ++) unJugador
 
 --Funciones Auxiliares para subastar----------------------------------------------------------------------------------------------
-tieneTacticaOferenteSingular :: Participante -> Bool
-tieneTacticaOferenteSingular = (=="Oferente singular").tactica 
-
-tieneTacticaAccionista :: Participante -> Bool
-tieneTacticaAccionista  = (=="Accionista").tactica
+tieneTactica :: String -> Participante -> Bool
+tieneTactica unaTactica = (==unaTactica).tactica 
 
 ganaLaPropiedad :: Propiedad -> Accion
 ganaLaPropiedad unaPropiedad unJugador = agregarPropiedad unaPropiedad.mapDinero (subtract (snd unaPropiedad)) $ unJugador
@@ -62,8 +59,7 @@ ganaLaPropiedad unaPropiedad unJugador = agregarPropiedad unaPropiedad.mapDinero
 
 subastar :: Propiedad -> Accion
 subastar unaPropiedad unJugador
-    | tieneTacticaOferenteSingular unJugador = ganaLaPropiedad unaPropiedad unJugador
-    | tieneTacticaAccionista unJugador = ganaLaPropiedad unaPropiedad unJugador
+    | tieneTactica "OferenteSingular" unJugador || tieneTactica "Accionista" unJugador = ganaLaPropiedad unaPropiedad unJugador
     | otherwise = unJugador
 
 --Funciones Auxiliares para Accion cobrarAlquileres-----------------------------------------------------------------------------
@@ -85,7 +81,7 @@ cobrarAlquileres unJugador = mapDinero (+ calcularAlquileres unJugador) unJugado
 
 pagarAAccionistas :: Accion
 pagarAAccionistas unJugador
-    | tieneTacticaAccionista unJugador= mapDinero (+200) unJugador
+    | tieneTactica "Accionista" unJugador = mapDinero (+200) unJugador
     | otherwise = mapDinero ((-)100) unJugador
 
 hacerBerrinchePor :: Propiedad -> Accion
