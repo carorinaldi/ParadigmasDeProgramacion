@@ -40,11 +40,11 @@ cambiarIndiceDeHidratacion nuevoIndice unaPersona = unaPersona {indiceDeHidratac
 
 -- A.1.1
 type Ejercicio = Persona -> Persona
-abdominales :: Int -> Persona -> Persona
+abdominales :: Int -> Ejercicio
 abdominales repeticiones unaPersona = pierdeCaloriasPorCadaRepeticion 8 repeticiones unaPersona
 
 -- A.1.2
-flexiones :: Int -> Persona -> Persona
+flexiones :: Int -> Ejercicio
 flexiones repeticiones unaPersona = pierdeHidratacionCada10Repeticiones 2 repeticiones .pierdeCaloriasPorCadaRepeticion 16 repeticiones $unaPersona
 
 pierdeCaloriasPorCadaRepeticion :: Int -> Int -> Persona -> Persona
@@ -54,19 +54,19 @@ pierdeHidratacionCada10Repeticiones :: Int ->Int-> Persona -> Persona
 pierdeHidratacionCada10Repeticiones cantidad repeticiones = mapIndiceDeHidratacion (flip (-) ((div repeticiones 10) *cantidad))  
 
 -- A.1.3
-levantarPesas :: Int -> Int -> Persona -> Persona
+levantarPesas :: Int -> Int -> Ejercicio
 levantarPesas repeticiones unPeso unaPersona
     | tieneAlgunaPesa unaPersona = pierdeHidratacionCada10Repeticiones unPeso repeticiones. pierdeCaloriasPorCadaRepeticion 32 repeticiones $ unaPersona
     | otherwise = id unaPersona
 
-levantarPesas' :: Int -> Int -> Persona -> Persona
+levantarPesas' :: Int -> Int -> Ejercicio
 levantarPesas' repeticiones unPeso unaPersona = registrarEfectoSiCumple tieneAlgunaPesa (pierdeHidratacionCada10Repeticiones unPeso repeticiones. pierdeCaloriasPorCadaRepeticion 32 repeticiones) $ unaPersona
 
 tieneAlgunaPesa :: Persona -> Bool
 tieneAlgunaPesa = (>0).length.equipamientos 
 
 -- A.1.4
-laGranHomeroSimpson :: Persona -> Persona
+laGranHomeroSimpson :: Ejercicio
 laGranHomeroSimpson = id
 
 -- A.2.1
@@ -97,7 +97,7 @@ tieneSoloPesas = all esPesa.equipamientos
 esPesa :: String -> Bool
 esPesa = (=="pesa")
 
-registrarEfectoSiCumple :: (Persona -> Bool) -> (Accion) -> Accion
+registrarEfectoSiCumple :: (Persona -> Bool) -> (Persona->Persona) -> Persona -> Persona
 registrarEfectoSiCumple condicion efecto unaPersona
     | condicion unaPersona = efecto unaPersona
     | otherwise = id unaPersona
@@ -110,19 +110,32 @@ comerUnSandwich :: Accion
 comerUnSandwich unaPersona = cambiarIndiceDeHidratacion maximaHidratacion . mapCantidadDeCalorias (+500) $ unaPersona
 
 -- Parte B
+type Tiempo = Int
+type Rutina = (Tiempo,[Ejercicio])
 
---type Rutina = Int->[Ejercicio]->Persona
+tiempo :: Rutina -> Tiempo
+tiempo (tiempo, _) = tiempo
 
-ejercicios :: [Ejercicio]
-ejercicios = [abdominales 2 ,flexiones 10]
+ejercicios :: Rutina -> [Ejercicio]
+ejercicios (_, ejercicios) = ejercicios
 
-noSuperaTiempoLibre :: Int -> Persona -> Bool 
-noSuperaTiempoLibre tiempo unaPersona = cantidadDeTiempoDisponible unaPersona > tiempo
+ejerciciosVarios :: [Ejercicio]
+ejerciciosVarios = [abdominales 2 ,flexiones 10, levantarPesas' 2 3]
+
+rutina1 :: Rutina
+rutina1 = (2,ejerciciosVarios)
+
+noSuperaTiempoLibre :: Rutina -> Persona -> Bool 
+noSuperaTiempoLibre unaRutina unaPersona = cantidadDeTiempoDisponible unaPersona > tiempo unaRutina
+
+realizarRutina :: Rutina -> Persona -> Persona
+realizarRutina unaRutina unaPersona 
+    | noSuperaTiempoLibre unaRutina unaPersona = (foldr ($) unaPersona (ejercicios unaRutina)) 
+
+
 -- B.1
-esPeligrosa :: Int -> [Ejercicio]->Persona-> Bool
-esPeligrosa tiempo ejercicios unaPersona 
-    | noSuperaTiempoLibre tiempo unaPersona = quedaAgotada (foldr ($) unaPersona ejercicios)
-
+esPeligrosa :: Rutina -> Persona -> Bool
+esPeligrosa unaRutina unaPersona = quedaAgotada.realizarRutina unaRutina $unaPersona
 
 quedaAgotada :: Persona -> Bool
 quedaAgotada unaPersona =  esMenorA 10 indiceDeHidratacion unaPersona && esMenorA 50 cantidadDeCalorias unaPersona
@@ -131,34 +144,26 @@ esMenorA :: Ord a1 => a1 -> (a2 -> a1) -> a2 -> Bool
 esMenorA cantidad argumento = (<cantidad).argumento
 
 -- B.2
-{- esBalanceada :: Int -> [Ejercicio]->Persona-> Bool
-esBalanceada tiempo ejercicios unaPersona 
-    | noSuperaTiempoLibre tiempo unaPersona = esmenorA (reducirALaMitad (cantidadDeCalorias unaPersona)) $ (foldr ($) unaPersona ejercicios) && esMayorA 80 indiceDeHidratacion $ (foldr ($) unaPersona ejercicios)
+esBalanceada :: Rutina -> Persona -> Bool
+esBalanceada unaRutina unaPersona = (reducirALaMitad (cantidadDeCalorias unaPersona)) > (cantidadDeCalorias(realizarRutina unaRutina unaPersona)) && (esMayorA 80 indiceDeHidratacion $ (realizarRutina unaRutina unaPersona))
 
-esMayorA cantidad argumento = (>cantidad).argumento -}
+esMayorA :: Ord a1 => a1 -> (a2 -> a1) -> a2 -> Bool
+esMayorA cantidad argumento = (>cantidad).argumento
 
+elAbominableAbdominal :: Rutina
+elAbominableAbdominal = (1,map abdominales [1..])
 
-{-
+-- Parte C
+-- C.1
+seleccionarGrupoDeEjercicio :: Persona -> [Persona] -> [Persona]
+seleccionarGrupoDeEjercicio unaPersona unGrupo = filter (puedeSerGrupo unaPersona) unGrupo
 
-Tenemos rutinas, las cuales tienen un tiempo aproximado de duración y un listado de ejercicios. Lo primero que tenemos que tener 
-en cuenta es que una persona no puede hacer rutinas cuya duración aproximada sea mayor que su tiempo libre. De cada rutina queremos
-saber si:
+puedeSerGrupo :: Persona -> Persona -> Bool
+puedeSerGrupo unaPersona otraPersona = cantidadDeTiempoDisponible unaPersona == cantidadDeTiempoDisponible otraPersona 
 
-esPeligrosa: una rutina es peligrosa cuando deja a la persona agotada. Esto sucede cuando sus calorías son menores a 50 y su índice 
-de hidratación es menor a 10.
+-- C.2
+promedioDeRutina :: Rutina -> [Persona] -> (Int, Int)
+promedioDeRutina unaRutina unGrupo = (promedio.map cantidadDeCalorias.map (realizarRutina unaRutina) $unGrupo , promedio.map indiceDeHidratacion.map (realizarRutina unaRutina) $unGrupo)
 
-esBalanceada: una rutina es balanceada cuando al terminarla, el índice de hidratación de la persona es mayor a 80 y las calorías 
-son menos de la mitad de cuando empezó. 
-
-Modelar la rutina elAbominableAbdominal, dicha rutina dura aproximadamente 1 hora y consiste en hacer 1 abdominal, 2 abdominales, 
-3 abdominales... hasta el infinito.
-
-Parte C
-
-Para finalizar vamos a agregar dos funcionalidades más, relacionadas a los ejercicios grupales:
-
-seleccionarGrupoDeEjercicio: una persona quiere seleccionar quienes pueden hacer rutina con ella a partir de un grupo 
-de personas. 
-Las personas que pueden ser grupo de ejercicio de otra son aquellas que tengan el mismo tiempo disponible.
-promedioDeRutina: dada una rutina y un grupo de personas, devolver el promedio de calorías y del índice de hidratación final del 
-grupo tras haber hecho la rutina. -}
+promedio :: Foldable t => t Int -> Int
+promedio lista = div (sum lista) (length lista)
