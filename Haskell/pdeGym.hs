@@ -130,8 +130,8 @@ noSuperaTiempoLibre unaRutina unaPersona = cantidadDeTiempoDisponible unaPersona
 
 realizarRutina :: Rutina -> Persona -> Persona
 realizarRutina unaRutina unaPersona 
-    | noSuperaTiempoLibre unaRutina unaPersona = (foldr ($) unaPersona (ejercicios unaRutina)) 
-
+    | noSuperaTiempoLibre unaRutina unaPersona = foldr ($) unaPersona (ejercicios unaRutina) 
+    | otherwise = unaPersona
 
 -- B.1
 esPeligrosa :: Rutina -> Persona -> Bool
