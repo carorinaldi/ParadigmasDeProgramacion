@@ -13,7 +13,6 @@ viveEnLaMansion(charles).
 
 odiaA(Odiado,tiaAgatha):-
     viveEnLaMansion(Odiado),
-    Odiado \= tiaAgatha,
     Odiado \= elMayordomo.
 
 odiaA(Odiado,charles):-
@@ -25,8 +24,8 @@ odiaA(Odiado,elMayordomo):-
 
 esMasRicoQueTiaAghata(Persona):-
     viveEnLaMansion(Persona),
-    not(odiaA(Persona,elMayordomo)),
-    Persona \= tiaAgatha.
+    not(odiaA(Persona,elMayordomo)).
+%    Persona \= tiaAgatha.
     
 
 quienMata(Victima,Odiador):-
@@ -40,7 +39,7 @@ El programa debe resolver el problema de quién mató a la tía Agatha.
 Mostrar la consulta utilizada y la respuesta obtenida.
 
 ?- quienMata(tiaAgatha,Asesino).
-Asesino = charles ;
+Asesino = tiaAgatha ;
 false.
 
 
@@ -53,28 +52,29 @@ false.
 - A quién odia charles.
 
 ?- odiaA(Odiado,charles).   
-Odiado = tiaAgatha ;
 Odiado = elMayordomo ;
 false.
 
 
 - El nombre de quien odia a tía Ágatha.
 
-?- odiaA(tiaAgatha,Odiador). 
-Odiador = charles ;
-false.
+?- odiaA(tiaAgatha,Odiador).
+Odiador = tiaAgatha ;
+Odiador = elMayordomo.
 
 - Todos los odiadores y sus odiados.
 
-?- odiaA(Odiado,Odiador).    
+?- odiaA(Odiado,Odiador).
+Odiado = Odiador, Odiador = tiaAgatha ;
 Odiado = charles,
 Odiador = tiaAgatha ;
-Odiado = tiaAgatha,
-Odiador = charles ;
 Odiado = elMayordomo,
 Odiador = charles ;
+Odiado = tiaAgatha,
+Odiador = elMayordomo ;
 Odiado = charles,
 Odiador = elMayordomo.
+
 
 - Si es cierto que el mayordomo odia a alguien.
 
