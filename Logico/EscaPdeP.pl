@@ -85,6 +85,10 @@ tieneSuerte(Persona,Sala):-
     persona(Persona, _, Peculiaridades),
     length(Peculiaridades,0).
 
+/*Otra forma sin length
+sinHabilidades(Persona):-
+    persona(Persona, _ , []). */
+
 /* tieneSuerte/2: una persona tiene suerte en una sala si puede salir de ella aún sin tener ninguna peculiaridad. */
 
 esMacabra(Empresa):-
@@ -107,19 +111,26 @@ promedioDeDificultadDeSusSalas(Empresa,Promedio):-
     sum_list(Dificultades, TotalDificultades),
     length(Dificultades, Cantidad),
     Promedio is TotalDificultades/Cantidad.
+
+/* otra forma de resolver el promedio
+promedioDificultad(Empresa, Promedio):-
+    empresa(_, Empresa),
+    findall(Nivel, (empresa(Sala, Empresa), nivelDeDificultadDeLaSala(Sala, Nivel)), Niveles),
+    average(Niveles, Promedio).
+  
+  average(Lista, Promedio):-
+    length(Lista, Cantidad),
+    sumlist(Lista, Sumatoria),
+    Promedio is Sumatoria / Cantidad. */
 /* empresaCopada/1: una empresa es copada si no es macabra y el promedio de dificultad de sus salas es menor a 4. */
+
 esSalaDe(estrellasDePelea , supercelula).
 sala(estrellasDePelea,familiar(videojuegos,7)).
-
-esSalaDe(choqueDeLaRealeza , supercelula):-
-    sala(choqueDeLaRealeza,familiar(videojuegos,_)).
-
+esSalaDe(choqueDeLaRealeza , supercelula).
+%:-    sala(choqueDeLaRealeza,familiar(videojuegos,_)). no va como regla por no conocer la cantidad de salas
 esSalaDe(miseriaDeLaNoche , sKPista).
-
 sala(miseriaDeLaNoche,terrorifica(150, 21)).
-
-esSalaDe(_ , Vertigo).
-
+%esSalaDe(_ , Vertigo). no va por no contar con salas
 
 /* ¡Cada vez hay más salas y empresas! Conozcámoslas para agregarlas a nuestro sistema:
 La empresa supercelula es dueña de salas de escape familiares ambientadas en videojuegos. La sala estrellasDePelea cuenta con 7 habitaciones 
