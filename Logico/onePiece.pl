@@ -58,6 +58,14 @@ pirataDestacado(Pirata,Evento):-
     impactoEnRecompensa( Pirata, Evento , Monto),
     forall(impactoEnRecompensa(_,Evento,Monto2) , Monto >= Monto2).
 
+pirataMasDestacadoV2(Pirata, Evento):-
+    impactoEnRecompensa(Pirata, Evento, Recompensa),
+    not((
+      impactoEnRecompensa(_, Evento, OtraRecompensa),
+      OtraRecompensa > Recompensa
+    )).
+  
+
 
 /* 
 2) Saber quién fue el pirata que más se destacó en un evento, en base al impacto que haya tenido su
@@ -141,4 +149,20 @@ persona puede considerarse peligrosa: alguien que comió una fruta peligrosa se 
 peligroso , independientemente de cuál sea el precio sobre su cabeza.
 b) Justificar las decisiones de modelado tomadas para cumplir con lo pedido, tanto desde el punto
 de vista de la definición como del uso de los nuevos predicados.
-7) Saber si una tripulación es de piratas de asfalto, que se cumple si ninguno de sus miembros puede nadar.*/
+*/
+piratasDeAsfalto(Tripulacion):-
+    tripulante(_,Tripulacion),
+    forall(tripulante(Pirata,Tripulacion),
+    not(puedeNadar(Pirata))).
+
+puedeNadar(Pirata):-
+    tripulante(Pirata,_),
+    not(comio(Pirata,_)).
+
+/* Otra forma de resolverlo
+piratasDeAsfalto(Tripulacion):-
+    tripulante(_, Tripulacion),
+    not((tripulante(Pirata, Tripulacion),
+        puedeNadar(Pirata))). */
+
+%7) Saber si una tripulación es de piratas de asfalto, que se cumple si ninguno de sus miembros puede nadar.*/
