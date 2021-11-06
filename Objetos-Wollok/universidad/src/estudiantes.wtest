@@ -1,0 +1,20 @@
+import estudiantes.*
+
+describe "Estudiantes" {
+	const denise = new Estudiante(notas = [ 8, 9 ], materiasEnCurso = [])
+	
+	test "si un estudiante tiene notas 7 y 9 su promedio sera 8" {
+		const unEstudiante = new Estudiante(notas = [ 7, 9 ], materiasEnCurso = [])
+		assert.equals(8, unEstudiante.promedio())
+	}
+	
+	test "lucia no desaprobo ningun examen" {
+		assert.equals(0, lucia.desaprobo())
+	}
+	
+		test "denise es una estudiante ejemplar" {
+		assert.that(denise.esEjemplar())
+	}
+
+}
+
