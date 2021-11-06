@@ -1,0 +1,40 @@
+@startuml
+class Estudiante {
+    notas
+    materiasEnCurso
+
+	promedio() 
+	desaprobo()
+	esEjemplar() 
+	pasarDeAnio()
+    proximasMaterias() 
+	agregarNota(unaNota) 
+	}
+
+object profesor{
+    cfd 
+    estudiantes
+
+    estudiantesEjemplares() {
+	promedioDeNotasDelCurso() {
+	evaluarEstudiantes() {
+	notaExamenSorpresa() {
+}
+
+object lucia {
+
+}
+object juan {
+
+}
+object perla {
+
+}
+
+Estudiante "*" <-- profesor : conoce
+Estudiante <|-- lucia : hereda
+Estudiante <|-- juan : hereda
+Estudiante <|-- perla : hereda
+
+' <.. usa
+@enduml
