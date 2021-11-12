@@ -6,11 +6,11 @@ class Producto {
 	
 	method precio() {
 		return precioBase + precioBase* self.iva()	
-
+	}
+	
 	method nombreDeOferta() {
 		return "SUPER OFERTA" + nombre 
-	}
-	} 
+	}	
 }
 
 class Mueble inherits Producto {
@@ -29,10 +29,10 @@ class Ganga inherits Producto {
 	
 	override method precio() {
 		return 0
+	}
 		
 	override method nombreDeOferta() {
 		return super() + "COMPRAME POR FAVOR" 
-	}
 	}
 }
 
