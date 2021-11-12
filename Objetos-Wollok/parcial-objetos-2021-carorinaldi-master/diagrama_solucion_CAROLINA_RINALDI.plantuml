@@ -1,0 +1,76 @@
+@startuml
+
+class Producto {
+	nombre
+	precioBase
+	
+	iva() 
+	precio()
+}
+
+class Mueble extends Producto {
+	recargo
+	
+	precio()
+}
+
+class Indumentaria extends Producto {
+	
+}
+
+class Ganga extends Producto {
+    precio()
+}
+
+class Cupon {
+    fueUsado
+    descuento	
+	
+}
+
+class Usuario {
+	nombre
+	dinero
+    cupones
+	puntos
+	nivel  
+	productosEnCarrito 
+}
+
+Nivel <-u- Usuario
+Producto "*" <-l- Usuario : productos
+Cupon "*" <-u- Usuario : cupones
+
+interface Nivel {
+    puedeAcceder(unUsuario)
+    permiteAgregarProductoA(unUsuario)
+}
+
+object oro {
+    puedeAcceder(unUsuario)
+    permiteAgregarProductoA(unUsuario)
+}
+
+object plata {
+    puedeAcceder(unUsuario)
+    permiteAgregarProductoA(unUsuario)    
+}
+
+object bronce {
+    puedeAcceder(unUsuario)
+    permiteAgregarProductoA(unUsuario)    
+}
+
+object pdepLibre {
+    usuarios
+    productos
+}
+
+Usuario "*" <-u- pdepLibre : usuarios
+Producto "*" <-u- pdepLibre : productos
+
+Nivel <|.. oro
+Nivel <|.. plata
+Nivel <|.. bronce
+
+@enduml
