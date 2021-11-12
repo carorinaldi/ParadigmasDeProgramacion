@@ -1,0 +1,89 @@
+@startuml
+
+object gameflix {
+    juegos
+    usuarios
+
+    buscarJuego(nombre)
+    existeJuego(nombre
+    cobrarSuscripciones()
+}
+
+class Usuario{
+    suscripcion
+    dinero
+    humor
+
+    actualizarSuscripcion(nuevaSuscripcion)
+    pagarsuscripcion()
+    jugar(unJuego, unasHoras)
+}
+
+class Juego {
+    nombre
+    precio
+    categoria
+
+    esDeCategoria(unaCategoria)
+    seLlama(unNombre)
+    esBarato()
+}
+
+class JuegoViolento extends Juego {
+	serJugado(unUsuario,unasHoras) 
+}
+
+class MOBA extends Juego {
+	serJugado(unUsuario,unasHoras) 
+}
+
+class Terror extends Juego {
+	serJugado(unUsuario,unasHoras) 
+}
+
+class Estrategico extends Juego {
+	serJugado(unUsuario,unasHoras) 
+}
+
+
+interface Suscripcion {
+    costo()
+    permiteJugar(unJuego)
+}
+
+object premium {
+    costo()
+    permiteJugar(unJuego)
+}
+
+object base {
+    
+    costo()
+    permiteJugar(unJuego)
+}
+
+class SuscripcionCategorica implements Suscripcion {
+    costo()
+    permiteJugar(unJuego)
+}
+
+object prueba {
+    costo()
+    permiteJugar(unJuego)
+}
+
+object infantil {
+    costo()
+    permiteJugar(unJuego)
+}
+
+
+Juego <-u- gameflix : conoce
+Usuario <-u- gameflix
+Suscripcion <-r- Usuario
+Suscripcion <|.. premium : implementa
+Suscripcion <|.. base
+SuscripcionCategorica <|-- prueba : hereda
+SuscripcionCategorica <|-- infantil
+Juego <.. Usuario
+@enduml

@@ -1,0 +1,59 @@
+@startuml
+class Simulador {
+	nombre
+	edad
+	dinero
+
+    initialize() 
+    cobrar() 	
+    cuantoCobra() 
+    puedeSimular()
+}
+
+class Planificador {
+	requisitos
+    tieneFuego
+    extras 
+
+    initialize()
+	puedeSimular()
+}
+
+class Caracterizador {
+    disfraces
+    pseudonimo
+	
+	puedeSimular()
+}
+
+class Tecnico {
+	equipamientoAdquirido 
+	equipamientoPendiente
+	
+    cuantoCobra() 
+    puedeSimular()
+}
+
+class Investigador {
+	cuantoCobra() 
+	puedeSimular()
+}
+
+class Extra {
+	nombre
+	
+	puedeSimular()
+}
+
+interface Sim{
+    puedeSimular()
+}
+
+Simulador <|-- Planificador : hereda
+Simulador <|-- Caracterizador : hereda
+Simulador <|-- Tecnico  : hereda
+Simulador <|-- Investigador : hereda
+Extra <-- Planificador : conoce
+Sim <|.. Simulador : implementa
+Sim <|.. Extra : implementa
+@enduml
