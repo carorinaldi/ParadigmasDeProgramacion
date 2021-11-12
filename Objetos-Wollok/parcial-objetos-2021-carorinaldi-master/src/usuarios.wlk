@@ -47,7 +47,7 @@ class Usuario {
 	}
 	
 	method seleccionarCupon() {
-		return !self.cuponesNoUsados().anyOne()
+		return self.cuponesNoUsados().anyOne()
 	}
 	
 	method cuponesNoUsados() {
